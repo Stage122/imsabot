@@ -1,4 +1,4 @@
-#!/bin/bash
+
 set -e
 
 if [ ! -f "faiss_index.pkl" ]; then
