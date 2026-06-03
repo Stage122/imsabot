@@ -1,0 +1,7 @@
+pycache/
+.venv/
+faiss_index.pkl
+pages.json
+sessions.json
+*.pyc
+.env
