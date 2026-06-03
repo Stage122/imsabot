@@ -26,9 +26,10 @@ QUEUE_TABLE = db.table("queue")
 
 FAISS_FILE = "faiss_index.pkl"
 if not os.path.exists(FAISS_FILE):
+
 # warning message must be indented (it's inside the if block)
 print("Warning: faiss_index.pkl not found. Run index_embeddings.py first.")
-Load FAISS index and sentence-transformers model
+Load FAISS index and sentence-transformers model (imports)
 MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", None)
 if OPENAI_API_KEY:
@@ -42,15 +43,12 @@ import faiss
 sbert = SentenceTransformer("all-MiniLM-L6-v2")
 faiss_data = None
 if os.path.exists(FAISS_FILE):
-    FAISS_FILE = "faiss_index.pkl"
-    # warning message must be indented (it's inside the if block)
-    print("Warning: faiss_index.pkl not found. Run index_embeddings.py first.")
 
 with open(FAISS_FILE, "rb") as f:
     faiss_data = pickle.load(f)
-index = faiss_data["index"]
-metadatas = faiss_data["metadatas"]
-texts = faiss_data["texts"]
+index = faiss_data.get("index")
+metadatas = faiss_data.get("metadatas", [])
+texts = faiss_data.get("texts", [])
 else:
 
 index = None
@@ -81,7 +79,7 @@ async def chat(req: ChatReq):
 sid = req.session_id
 SESSIONS_TABLE.insert({'session_id': sid, 'from': 'user', 'text': req.message, 'ts': time.time()})
 candidates = retrieve(req.message, top_k=4)
-context = "\n\n---\n\n".join([f"Fonte: {c['meta']['url']}\n{c['text']}" for c in candidates])
+context = "\n\n---\n\n".join([f"Fonte: {c['meta'].get('url','')}\\n{c['text']}" for c in candidates])
 if OPENAI_API_KEY:
     prompt = [
         {"role": "system", "content": SYSTEM_PROMPT},
@@ -95,14 +93,14 @@ if OPENAI_API_KEY:
                   "\n\nEcco i contenuti rilevanti:\n" + context)
 else:
     if candidates:
-        snippets = "\n\n".join([f"- {c['meta']['url']}: {c['text'][:400].strip()}..." for c in candidates])
+        snippets = "\n\n".join([f"- {c['meta'].get('url','')}: {c['text'][:400].strip()}..." for c in candidates])
         answer = ("Non ho una chiave LLM configurata. Ecco i contenuti più rilevanti che ho trovato:\n\n" +
                   snippets + "\n\nSe vuoi una risposta più elaborata, configura OPENAI_API_KEY.")
     else:
         answer = ("Non ho trovato informazioni rilevanti nel sito. Puoi richiedere assistenza da un operatore "
                   "cliccando su 'Parla con un operatore' nel widget.")
 SESSIONS_TABLE.insert({'session_id': sid, 'from': 'bot', 'text': answer, 'ts': time.time()})
-return {"answer": answer, "sources": [c["meta"]["url"] for c in candidates]}
+return {"answer": answer, "sources": [c["meta"].get("url","") for c in candidates]}
 @app.post("/handoff")
 async def handoff(req: ChatReq):
 
