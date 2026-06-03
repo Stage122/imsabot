@@ -26,7 +26,6 @@ QUEUE_TABLE = db.table("queue")
 
 FAISS_FILE = "faiss_index.pkl"
 if not os.path.exists(FAISS_FILE):
-
 # warning message must be indented (it's inside the if block)
 print("Warning: faiss_index.pkl not found. Run index_embeddings.py first.")
 Load FAISS index and sentence-transformers model
@@ -43,6 +42,9 @@ import faiss
 sbert = SentenceTransformer("all-MiniLM-L6-v2")
 faiss_data = None
 if os.path.exists(FAISS_FILE):
+    FAISS_FILE = "faiss_index.pkl"
+    # warning message must be indented (it's inside the if block)
+    print("Warning: faiss_index.pkl not found. Run index_embeddings.py first.")
 
 with open(FAISS_FILE, "rb") as f:
     faiss_data = pickle.load(f)
