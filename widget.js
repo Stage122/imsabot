@@ -1,7 +1,7 @@
 <!-- Inserisci questo snippet prima di </body> nel sito imsasrl.it -->
 <script>
 (function(){
-const API_BASE = "https://TUO_BACKEND_DOMAIN:8000"; // sostituisci con l'URL del backend (http://localhost:8000 per test)
+const API_BASE = "https://TUO_SERVICE.onrender.com; // sostituisci con l'URL del backend (http://localhost:8000 per test)
 const API = API_BASE + "/chat";
 const HANDOFF = API_BASE + "/handoff";
 const SESSION_API = API_BASE + "/session";
