@@ -1,4 +1,3 @@
-
 import os
 import time
 import pickle
@@ -9,8 +8,6 @@ from typing import List
 from tinydb import TinyDB, Query
 
 app = FastAPI(title="IMSA Chatbot (FAISS prototype)")
-
-Allow CORS for demo; restrict in production
 app.add_middleware(
 
 CORSMiddleware,
@@ -29,7 +26,6 @@ FAISS_FILE = "faiss_index.pkl"
 if not os.path.exists(FAISS_FILE):
 
 print("Warning: faiss_index.pkl not found. Run index_embeddings.py first.")
-Load FAISS index and sentence-transformers model
 MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", None)
 if OPENAI_API_KEY:
