@@ -139,7 +139,7 @@ msgs = SESSIONS_TABLE.search(Query().session_id == session_id)
 # sort by ts
 msgs_sorted = sorted(msgs, key=lambda x: x.get('ts', 0))
 return {"messages": msgs_sorted}
-#if name == "main":
+if name == "main":
 
 import uvicorn
 uvicorn.run(app, host="0.0.0.0", port=8000)
