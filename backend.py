@@ -9,7 +9,7 @@ from tinydb import TinyDB, Query
 
 app = FastAPI(title="IMSA Chatbot (FAISS prototype)")
 
-Allow CORS for demo; restrict in production
+#Allow CORS for demo; restrict in production
 app.add_middleware(
 
 CORSMiddleware,
@@ -29,7 +29,7 @@ if not os.path.exists(FAISS_FILE):
 
 # warning message must be indented (it's inside the if block)
 print("Warning: faiss_index.pkl not found. Run index_embeddings.py first.")
-Load FAISS index and sentence-transformers model
+#Load FAISS index and sentence-transformers model
 MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", None)
 if OPENAI_API_KEY:
