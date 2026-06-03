@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Dashboard Operatori — IMSA Chatbot</title>
+<style>
+
+body{font-family:Arial;margin:20px}
+.card{border:1px solid #ddd;padding:10px;margin-bottom:10px;border-radius:6px}
+.btn{padding:6px 10px;border-radius:4px;background:#0A66C2;color:white;border:none;cursor:pointer}
+.btn-secondary{background:#666}
+textarea{width:100%;height:80px}
+</style>
+</head>
+<body>
+<h2>Dashboard Operatori — IMSA Chatbot</h2>
+<div>
+
+Backend URL: <input id="apiBase" value="http://localhost:8000" style="width:300px"/>
+<button id="refreshQueue" class="btn btn-secondary">Aggiorna</button>
+</div>
+<h3>Coda</h3>
+<div id="queue"></div>
+
+<h3>Dettaglio sessione</h3>
+<div id="sessionDetail"></div>
+
+<script>
+async function fetchQueue(){
+const api = document.getElementById("apiBase").value;
+const res = await fetch(api + "/operator/queue");
+const data = await res.json();
+const q = data.queue || [];
+const container = document.getElementById("queue");
+container.innerHTML = "";
+q.forEach(item => {
+
+const el = document.createElement("div");
+el.className = "card";
+el.innerHTML = `<div><strong>Session:</strong> ${item.session_id} <small>${new Date(item.ts*1000).toLocaleString()}</small></div>
+                <div style="margin-top:6px">${item.message}</div>
+                <div style="margin-top:8px"><button class="btn" onclick="openSession('${item.session_id}')">Apri</button></div>`;
+container.appendChild(el);
+});
+}
+
+async function openSession(sessionId){
+const api = document.getElementById("apiBase").value;
+const res = await fetch(api + "/session/" + sessionId);
+const data = await res.json();
+const container = document.getElementById("sessionDetail");
+container.innerHTML = "";
+const msgs = data.messages || [];
+msgs.sort((a,b)=> (a.ts||0)-(b.ts||0));
+msgs.forEach(m=>{
+
+const el = document.createElement("div");
+el.className = "card";
+el.innerHTML = `<div><strong>${m.from}</strong> <small>${new Date(m.ts*1000).toLocaleString()}</small></div><div style="margin-top:6px">${m.text}</div>`;
+container.appendChild(el);
+});
+// reply box
+const replyBox = document.createElement("div");
+replyBox.className = "card";
+replyBox.innerHTML = `<h4>Invia risposta</h4>
+
+<textarea id="replyText"></textarea>
+<div style="margin-top:8px"><button class="btn" onclick="sendReply('${sessionId}')">Invia a utente</button></div>`;
+container.appendChild(replyBox);
+}
+
+async function sendReply(sessionId){
+const api = document.getElementById("apiBase").value;
+const text = document.getElementById("replyText").value;
+if(!text) return alert("inserisci testo");
+const res = await fetch(api + "/operator/send", {
+
+method:"POST",
+headers: {"Content-Type":"application/json"},
+body: JSON.stringify({session_id: sessionId, text})
+});
+const data = await res.json();
+alert("Messaggio inviato.");
+fetchQueue();
+openSession(sessionId);
+}
+
+document.getElementById("refreshQueue").onclick = fetchQueue;
+fetchQueue();
+</script>
+</body>
+</html>
