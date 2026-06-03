@@ -9,7 +9,7 @@ from tinydb import TinyDB, Query
 
 app = FastAPI(title="IMSA Chatbot (FAISS prototype)")
 
-Allow CORS for demo; restrict in production
+#Allow CORS for demo; restrict in production
 app.add_middleware(
 
 CORSMiddleware,
