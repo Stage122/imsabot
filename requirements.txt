@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+requests
+beautifulsoup4
+tqdm
+sentence-transformers
+faiss-cpu
+numpy
+openai
+tinydb
+python-multipart
+aiohttp
