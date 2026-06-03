@@ -1,4 +1,4 @@
-index_embeddings.py
+
 import os
 import json
 from tqdm import tqdm
