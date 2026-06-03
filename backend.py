@@ -27,6 +27,9 @@ QUEUE_TABLE = db.table("queue")
 FAISS_FILE = "faiss_index.pkl"
 if not os.path.exists(FAISS_FILE):
 
+# warning message must be indented (it's inside the if block)
+print("Warning: faiss_index.pkl not found. Run index_embeddings.py first.")
+
 print("Warning: faiss_index.pkl not found. Run index_embeddings.py first.")
 #Load FAISS index and sentence-transformers model
 MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
